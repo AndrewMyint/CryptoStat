@@ -6,7 +6,7 @@ export const Section = styled.section`
 `;
 
 export const Container = styled.div`
-  ${tw`my-0 mx-auto px-4 max-w-6xl `}
+  ${tw`my-0 mx-auto px-8 max-w-6xl `}
 `;
 
 export const Card = styled.div`
@@ -16,6 +16,7 @@ export const Card = styled.div`
   border: none;
   background: rgb(255, 255, 255, 1);
   border-radius: 6px;
+  margin-bottom: 10px;
 `;
 
 export const CardButton = styled.span`

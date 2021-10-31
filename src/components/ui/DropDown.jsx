@@ -27,8 +27,8 @@ const DropDown = ({ Icon, type, items }) => {
         tabIndex="0"
         className=" shadow menu dropdown-content bg-base-100 rounded-md w-auto text-xs "
       >
-        {items.map(({ name, url }) => (
-          <li>
+        {items?.map(({ name, url }) => (
+          <li key={name}>
             <div className="flex px-2 py-3 tems-center hover:bg-gray-200 rounded-sm">
               <div className="">
                 <a

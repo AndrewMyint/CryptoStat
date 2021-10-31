@@ -3,7 +3,7 @@ import styled from "styled-components";
 import tw from "twin.macro";
 
 const Form = styled.div`
-  ${tw` form-control mt-5 mx-auto p-2 `}
+  ${tw` form-control mt-5 p-2`}
 `;
 
 const SearchInput = styled.input`
@@ -11,7 +11,6 @@ const SearchInput = styled.input`
   width: 300px;
 `;
 
-console.log("Form: ", Form);
 const SearchBar = ({ onSearch }) => {
   return (
     <Form>

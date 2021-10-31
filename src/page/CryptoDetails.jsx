@@ -4,13 +4,7 @@ import { useParams } from "react-router-dom";
 import millify from "millify";
 import styled from "styled-components";
 import tw from "twin.macro";
-
-import {
-  Title,
-  Content,
-  SubHeading,
-  SubContent,
-} from "../components/ui/Typography";
+import { Title, SubHeading, SubContent } from "../components/ui/Typography";
 import { Section, Container, Card } from "../components/ui/Layout";
 import DropDown from "../components/ui/DropDown";
 import LinkBadge from "../components/ui/LinkBadge";
@@ -31,7 +25,16 @@ import {
   BadgeCheckIcon,
   SupportIcon,
 } from "@heroicons/react/outline";
-import { StopOutlined, CheckOutlined } from "@ant-design/icons";
+
+import {
+  MessageFilled,
+  RedditSquareFilled,
+  YoutubeFilled,
+  TwitterSquareFilled,
+  FacebookFilled,
+  StopOutlined,
+  CheckOutlined,
+} from "@ant-design/icons";
 
 import {
   useGetCryptoDetailsQuery,
@@ -44,9 +47,10 @@ import {
   numberWithCommas,
   isEven,
   extractRootDomain,
+  generateSocialBadges,
 } from "../components/helper";
 
-const Loader = "Loading...";
+const Loader = () => <div>Loading...</div>;
 
 const Icon = styled.div`
   ${tw`pr-2`}
@@ -73,14 +77,11 @@ const PriceChanged = styled.div`
   background: ${(props) => (props.even ? "#16c784" : "#ea3943")};
 `;
 
-const CoinStatSection = styled.div`
-  ${tw`grid grid-cols-2 gap-5`}
-`;
 const CoinInformation = styled.div`
-  ${tw`grid grid-cols-5 gap-5 mt-1`}
+  ${tw`grid sm:grid-flow-row sm:grid-cols-5 gap-5 mt-1`}
 `;
 const WhatIsBitCoin = styled.div`
-  ${tw`col-span-3 text-left`}
+  ${tw`order-2 sm:order-none sm:col-span-2 md:col-span-3 text-left`}
   h3 {
     font-weight: 700;
     color: rgba(55, 65, 81, 1);
@@ -94,27 +95,22 @@ const WhatIsBitCoin = styled.div`
     color: blue;
   }
 `;
-const CoinStatTableContainer = styled.div`
-  ${tw` p-4`}
-  box-sizing: border-box;
-  padding: 24px;
-  margin: 0px;
-  background-color: #f7fafd;
-  border-radius: 16px;
+
+// const SubInfoContainer = styled.div`
+//   ${tw`grid grid-cols-4 col-span-3`}
+// `;
+
+const SubInfoContainer = styled.ul`
+  ${tw`flex flex-row mt-3 md:mt-0 flex-wrap`}
+  flex-basis: 40%;
 `;
 
-const SubInfoContainer = styled.div`
-  ${tw`grid grid-cols-4 col-span-3`}
-`;
-const SubInfo = styled.div`
+const SubInfo = styled.li`
   ${tw`flex flex-col justify-center`}
-  width: 100%;
-  height: 100%;
+
   border-bottom: none;
   padding-left: 10px;
 `;
-
-const CoinStatContent = styled.div``;
 
 const HeaderSection = styled.div`
   ${tw`flex justify-between `}
@@ -123,7 +119,7 @@ const HeaderSection = styled.div`
 `;
 
 const SubInfoSection = styled.div`
-  ${tw`flex justify-between`}
+  ${tw`flex flex-col md:flex-row justify-between`}
   padding: 15px 10px 15px 10px;
 `;
 
@@ -135,6 +131,7 @@ const CustomTitle = styled(Title)`
   ${Title} {
   }
   color: rgb(253, 253, 253);
+  padding: 0;
 `;
 
 const CustomSubHeading = styled(SubHeading)`
@@ -150,9 +147,30 @@ const CustomSubContent = styled(SubContent)`
   color: rgb(253, 253, 253);
 `;
 
+const TimePeriodBar = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+`;
+
+const TimeSlot = styled.div`
+  ${tw`px-2 py-1 hover:bg-white rounded-lg cursor-pointer`}
+  background-color: ${(props) => (props.selected ? "white" : "none")}
+`;
+
+const TimeSlotContainer = styled.div`
+  ${tw`px-2 rounded-lg`}
+  display: flex;
+  flex-direction: row;
+  background-color: rgb(239 242 245);
+  color: rgb(88 102 126);
+  padding-top: 4px;
+  padding-bottom: 4px;
+`;
+
 const CryptoDetails = () => {
   const { coinId } = useParams();
-  const [timeperiod, setTimeperiod] = useState("7d");
+  const [timeperiod, setTimeperiod] = useState({ value: "7d", text: "7D" });
   const { data, isFetching: isFetchingDetail } =
     useGetCryptoDetailsQuery(coinId);
   const { data: coinHistory, isFetching: isFetchingHistory } =
@@ -160,23 +178,38 @@ const CryptoDetails = () => {
       coinId,
       timeperiod,
     });
-  console.log("CryptoDetails: ", data);
-  console.log("CrytoHistory:", coinHistory);
 
   if (isFetchingHistory) {
-    console.log("loading bro: ", isFetchingDetail, isFetchingHistory);
-    return <Loader />;
+    return (
+      <Section>
+        <Container>
+          <Loader />
+        </Container>
+      </Section>
+    );
   } else if (isFetchingDetail) {
-    console.log("loading bro: ", isFetchingDetail, isFetchingHistory);
-    return <Loader />;
+    return (
+      <Section>
+        <Container>
+          <Loader />
+        </Container>
+      </Section>
+    );
   }
   const cryptoDetails = data?.data?.coin;
 
-  // const links = cryptoDetails.links.map(d => {
+  const dropDownBadges = generateSocialBadges(cryptoDetails?.links);
 
-  // })
-
-  const time = ["3h", "24h", "7d", "30d", "1y", "3m", "3y", "5y"];
+  const time = [
+    { value: "3h", text: "3H" },
+    { value: "24h", text: "1D" },
+    { value: "7d", text: "7D" },
+    { value: "30d", text: "1M" },
+    { value: "3m", text: "3M" },
+    { value: "1y", text: "1Y" },
+    { value: "3y", text: "3Y" },
+    // { value: "5y", text: "5Y" },
+  ];
 
   const stats = [
     {
@@ -187,7 +220,10 @@ const CryptoDetails = () => {
     { title: "Rank", value: cryptoDetails.rank, icon: <HashtagIcon /> },
     {
       title: "24h Volume",
-      value: `$ ${cryptoDetails.volume && millify(cryptoDetails.volume)}`,
+      value: `$ ${
+        cryptoDetails["24hVolume"] &&
+        millify(parseFloat(cryptoDetails["24hVolume"]))
+      }`,
       icon: <ClockIcon />,
     },
     {
@@ -215,7 +251,7 @@ const CryptoDetails = () => {
     },
     {
       title: "Aprroved Supply",
-      value: cryptoDetails.approvedSupply ? (
+      value: cryptoDetails.supply?.confirmed ? (
         <CheckOutlined />
       ) : (
         <StopOutlined />
@@ -224,12 +260,12 @@ const CryptoDetails = () => {
     },
     {
       title: "Total Supply",
-      value: `$ ${millify(cryptoDetails.totalSupply)}`,
+      value: `$ ${millify(cryptoDetails?.supply?.total)}`,
       icon: <SupportIcon />,
     },
     {
       title: "Circulating Supply",
-      value: `$ ${millify(cryptoDetails.circulatingSupply)}`,
+      value: `$ ${millify(cryptoDetails?.supply?.circulating)}`,
       icon: <SupportIcon />,
     },
   ];
@@ -237,212 +273,251 @@ const CryptoDetails = () => {
   return (
     <Section>
       <Container>
-        <Card
-          style={{
-            backgroundColor: "rgb(1, 18 ,118)",
-            padding: "0px",
-            marginTop: "20px",
-          }}
-        >
-          <HeaderSection>
-            <TitleWithIcon>
-              <Icon>
-                <img
-                  // style={{ width: "30px", height: "30px" }}
-                  src={cryptoDetails?.iconUrl}
-                  alt={"crytocurrency icon"}
-                />
-              </Icon>
-              <CustomTitle>
-                {data?.data?.coin.name} ({data?.data?.coin.symbol})
-              </CustomTitle>
-            </TitleWithIcon>
-            <div className="flex flex-col">
-              <CustomSubHeading>
-                {data?.data?.coin.name} Price ({data?.data?.coin.symbol})
-              </CustomSubHeading>
-              <PriceAndChange>
-                <CustomTitle style={{ marginRight: "16px", padding: "0" }}>
-                  $
-                  {numberWithCommas(
-                    parseFloat(cryptoDetails?.price).toFixed(3)
-                  )}
-                </CustomTitle>
-                <PriceChanged even={isEven(cryptoDetails?.change)}>
-                  {cryptoDetails?.change}%
-                </PriceChanged>
-              </PriceAndChange>
-            </div>
-          </HeaderSection>
-          <SubInfoSection>
-            <div className="block col-span-3">
-              <ul className="flex flex-wrap ">
-                <BadgeContainer>
-                  {cryptoDetails?.websiteUrl ? (
-                    <LinkBadge
-                      style={{ textTransform: "lowercase" }}
-                      Icon={LinkIcon}
-                      type={extractRootDomain(cryptoDetails.websiteUrl)}
-                      item={[
-                        {
-                          url: cryptoDetails.websiteUrl,
-                          name: extractRootDomain(cryptoDetails.websiteUrl),
-                        },
-                      ]}
+        {!cryptoDetails ? (
+          "Something went wrong"
+        ) : (
+          <>
+            <Card
+              style={{
+                backgroundColor: "rgb(1, 18 ,118)",
+                padding: "0px",
+                marginTop: "20px",
+              }}
+            >
+              <HeaderSection>
+                <TitleWithIcon>
+                  <Icon>
+                    <img
+                      // style={{ width: "30px", height: "30px" }}
+                      src={cryptoDetails?.iconUrl}
+                      alt={"crytocurrency icon"}
                     />
-                  ) : (
-                    ""
-                  )}
-                </BadgeContainer>
-                <BadgeContainer>
-                  <LinkBadge
-                    Icon={CodeIcon}
-                    type="Souce code"
-                    item={cryptoDetails.links.filter(
-                      (d) => d.type === "github"
+                  </Icon>
+                  <CustomTitle>
+                    {data?.data?.coin.name} ({data?.data?.coin.symbol})
+                  </CustomTitle>
+                </TitleWithIcon>
+                <div className="flex flex-col">
+                  <CustomSubHeading>
+                    {data?.data?.coin.name} Price ({data?.data?.coin.symbol})
+                  </CustomSubHeading>
+                  <PriceAndChange>
+                    <CustomTitle style={{ marginRight: "16px", padding: "0" }}>
+                      $
+                      {numberWithCommas(
+                        parseFloat(cryptoDetails?.price).toFixed(3)
+                      )}
+                    </CustomTitle>
+                    <PriceChanged even={isEven(cryptoDetails?.change)}>
+                      {parseFloat(cryptoDetails?.change).toFixed(2)}%
+                    </PriceChanged>
+                  </PriceAndChange>
+                </div>
+              </HeaderSection>
+              <SubInfoSection>
+                <div className="block">
+                  <ul style={{ flexBasis: "30%" }} className="flex flex-wrap ">
+                    {cryptoDetails?.websiteUrl ? (
+                      <BadgeContainer>
+                        <LinkBadge
+                          style={{ textTransform: "lowercase" }}
+                          Icon={LinkIcon}
+                          type={extractRootDomain(cryptoDetails.websiteUrl)}
+                          item={[
+                            {
+                              url: cryptoDetails?.websiteUrl,
+                              name: extractRootDomain(
+                                cryptoDetails?.websiteUrl
+                              ),
+                            },
+                          ]}
+                        />
+                      </BadgeContainer>
+                    ) : (
+                      ""
+                    )}
+
+                    {cryptoDetails?.links ? (
+                      <BadgeContainer>
+                        <LinkBadge
+                          Icon={CodeIcon}
+                          type="Souce code"
+                          item={cryptoDetails?.links?.filter(
+                            (d) => d.type === "github"
+                          )}
+                        />
+                      </BadgeContainer>
+                    ) : (
+                      ""
+                    )}
+
+                    {dropDownBadges?.facebook.length > 0 && (
+                      <BadgeContainer>
+                        <DropDown
+                          type="Facebook"
+                          Icon={FacebookFilled}
+                          items={dropDownBadges?.facebook}
+                        />
+                      </BadgeContainer>
+                    )}
+                    {dropDownBadges?.reddit.length > 0 && (
+                      <BadgeContainer>
+                        <DropDown
+                          type="Reddit"
+                          Icon={RedditSquareFilled}
+                          items={dropDownBadges?.reddit}
+                        />
+                      </BadgeContainer>
+                    )}
+                    {dropDownBadges?.youtube.length > 0 && (
+                      <BadgeContainer>
+                        <DropDown
+                          type="Youtube"
+                          Icon={YoutubeFilled}
+                          items={dropDownBadges?.youtube}
+                        />
+                      </BadgeContainer>
+                    )}
+                    {dropDownBadges?.twitter.length > 0 && (
+                      <BadgeContainer>
+                        <DropDown
+                          type="Twitter"
+                          Icon={TwitterSquareFilled}
+                          items={dropDownBadges?.twitter}
+                        />
+                      </BadgeContainer>
+                    )}
+                    {dropDownBadges?.telegram.length > 0 && (
+                      <BadgeContainer>
+                        <DropDown
+                          type="Telegram"
+                          Icon={MessageFilled}
+                          items={dropDownBadges?.telegram}
+                        />
+                      </BadgeContainer>
+                    )}
+                    {dropDownBadges?.other.length > 0 && (
+                      <BadgeContainer>
+                        <DropDown
+                          type="Other"
+                          Icon={UserGroupIcon}
+                          items={dropDownBadges?.other}
+                        />
+                      </BadgeContainer>
+                    )}
+                    {cryptoDetails?.links ? (
+                      <BadgeContainer>
+                        <DropDown
+                          type="Websites"
+                          Icon={SearchIcon}
+                          items={cryptoDetails.links.filter(
+                            (d) => d.type === "website"
+                          )}
+                        />
+                      </BadgeContainer>
+                    ) : (
+                      ""
+                    )}
+                  </ul>
+                </div>
+                <SubInfoContainer>
+                  <SubInfo>
+                    <CustomSubHeading>Market Cap</CustomSubHeading>
+                    <CustomSubContent>
+                      $
+                      {numberWithCommas(
+                        parseFloat(cryptoDetails?.marketCap).toFixed(0)
+                      )}
+                    </CustomSubContent>
+                  </SubInfo>
+                  <SubInfo>
+                    <CustomSubHeading>Volume</CustomSubHeading>
+                    <CustomSubContent>
+                      $
+                      {numberWithCommas(
+                        parseFloat(cryptoDetails["24hVolume"]).toFixed(0)
+                      )}
+                    </CustomSubContent>
+                  </SubInfo>
+                  <SubInfo>
+                    <CustomSubHeading>Circulating Supply</CustomSubHeading>
+                    <CustomSubContent>
+                      $
+                      {numberWithCommas(
+                        parseFloat(cryptoDetails?.supply?.circulating).toFixed(
+                          0
+                        )
+                      )}
+                    </CustomSubContent>
+                  </SubInfo>
+                  <SubInfo>
+                    <CustomSubHeading>Total Supply</CustomSubHeading>
+                    <CustomSubContent>
+                      $
+                      {numberWithCommas(
+                        parseFloat(cryptoDetails?.supply?.total).toFixed(0)
+                      )}
+                    </CustomSubContent>
+                  </SubInfo>
+                </SubInfoContainer>
+              </SubInfoSection>
+            </Card>
+
+            <TimePeriodBar>
+              <TimeSlotContainer>
+                {time.map(({ value, text }) => (
+                  <TimeSlot
+                    key={value}
+                    value={value}
+                    selected={value === timeperiod.value}
+                    onClick={() => setTimeperiod({ value, text })}
+                  >
+                    {text}
+                  </TimeSlot>
+                ))}
+              </TimeSlotContainer>
+            </TimePeriodBar>
+            <LineChart2
+              coinHistory={coinHistory}
+              dateType={timeperiod.text.toUpperCase()}
+            />
+            {/* <Content>
+            {cryptoDetails.name} live price in US Dollar (USD). View value
+            statistics, market cap and supply.
+          </Content> */}
+            <CoinInformation>
+              <WhatIsBitCoin>
+                <Title>What is {cryptoDetails.name}?</Title>
+                {HTMLReactParser(cryptoDetails.description)}
+              </WhatIsBitCoin>
+              <div
+                className="sm:col-span-3 md:col-span-2"
+                style={{ paddingTop: "20px" }}
+              >
+                <SubHeading style={{ fontSize: "13px" }}>
+                  {cryptoDetails.symbol} to USD Converter
+                </SubHeading>
+                <Card>
+                  <Coverter
+                    icon={cryptoDetails.iconUrl}
+                    symbol={cryptoDetails.symbol}
+                    name={cryptoDetails.name}
+                    price={numberWithCommas(
+                      parseFloat(cryptoDetails?.price).toFixed(2)
                     )}
                   />
-                </BadgeContainer>
-                <BadgeContainer>
-                  <DropDown
-                    type="Community"
-                    Icon={UserGroupIcon}
-                    items={cryptoDetails.socials}
+                </Card>
+                <Card style={{ backgroundColor: "white" }}>
+                  <CoinStatInfo
+                    stats={[...stats, ...genericStats]}
+                    symbol={cryptoDetails.symbol}
+                    tableName={"Market Info"}
                   />
-                </BadgeContainer>
-                <BadgeContainer>
-                  <DropDown
-                    type="Websites"
-                    Icon={SearchIcon}
-                    items={cryptoDetails.links.filter(
-                      (d) => d.type === "website"
-                    )}
-                  />
-                </BadgeContainer>
-              </ul>
-            </div>
-            <SubInfoContainer>
-              <SubInfo>
-                <CustomSubHeading>Market Cap</CustomSubHeading>
-                <CustomSubContent>
-                  $
-                  {numberWithCommas(
-                    parseFloat(cryptoDetails?.marketCap).toFixed(0)
-                  )}
-                </CustomSubContent>
-              </SubInfo>
-              <SubInfo>
-                <CustomSubHeading>Volume</CustomSubHeading>
-                <CustomSubContent>
-                  $
-                  {numberWithCommas(
-                    parseFloat(cryptoDetails?.volume).toFixed(0)
-                  )}
-                </CustomSubContent>
-              </SubInfo>
-              <SubInfo>
-                <CustomSubHeading>Circulating Supply</CustomSubHeading>
-                <CustomSubContent>
-                  $
-                  {numberWithCommas(
-                    parseFloat(cryptoDetails?.circulatingSupply).toFixed(0)
-                  )}
-                </CustomSubContent>
-              </SubInfo>
-              <SubInfo>
-                <CustomSubHeading>Total Supply</CustomSubHeading>
-                <CustomSubContent>
-                  $
-                  {numberWithCommas(
-                    parseFloat(cryptoDetails?.totalSupply).toFixed(0)
-                  )}
-                </CustomSubContent>
-              </SubInfo>
-            </SubInfoContainer>
-          </SubInfoSection>
-        </Card>
-
-        {/* <Content>
-          {cryptoDetails.name} live price in US Dollar (USD). View value
-          statistics, market cap and supply.
-        </Content> */}
-        {/* <Select
-        defaultValue="7d"
-        className="select-timeperiod"
-        placeholder="Select Timeperiod"
-        onChange={(value) => setTimeperiod(value)}
-      >
-        {time.map((date) => (
-          <Option key={date}>{date}</Option>
-        ))}
-      </Select> */}
-
-        <Card className="mt-3 p-7">
-          <LineChart2 coinHistory={coinHistory} />
-        </Card>
-        {/* <CoinStatSection>
-          <CoinStatContent>
-            <Content>
-              An overview showing the statistics of {cryptoDetails.name}, such
-              as the base and quote currency, the rank, and trading volume.
-            </Content>
-          </CoinStatContent>
-          <CoinStatContent>
-            <Title>Other Stats Info</Title>
-            <Content>
-              An overview showing the statistics of {cryptoDetails.name}, such
-              as the base and quote currency, the rank, and trading volume.
-            </Content>
-          </CoinStatContent>
-        </CoinStatSection> */}
-
-        <CoinInformation>
-          <WhatIsBitCoin>
-            <Title>What is {cryptoDetails.name}?</Title>
-            {HTMLReactParser(cryptoDetails.description)}
-          </WhatIsBitCoin>
-          <div className="col-span-2" style={{ paddingTop: "20px" }}>
-            {/* <Title>{cryptoDetails.name} Value Statistics</Title> */}
-            <SubHeading style={{ fontSize: "13px" }}>
-              {cryptoDetails.symbol} to USD Converter
-            </SubHeading>
-            <Card>
-              <Coverter
-                icon={cryptoDetails.iconUrl}
-                symbol={cryptoDetails.symbol}
-                name={cryptoDetails.name}
-                price={numberWithCommas(
-                  parseFloat(cryptoDetails?.price).toFixed(2)
-                )}
-              />
-            </Card>
-            <Card style={{ backgroundColor: "white" }}>
-              <CoinStatInfo
-                stats={[...stats, ...genericStats]}
-                symbol={cryptoDetails.symbol}
-                tableName={"Market Info"}
-              />
-            </Card>
-            {/* <CoinStatTableContainer>
-              <CoinStatInfo stats={genericStats} tableName={"Other Info"} />
-            </CoinStatTableContainer> */}
-          </div>
-          {/* <div className="coin-links">
-            <Title level={3} className="coin-details-heading">
-              {cryptoDetails.name} Links
-            </Title>
-            {cryptoDetails.links?.map((link) => (
-              <div className="coin-link" key={link.name}>
-                <Title level={5} className="link-name">
-                  {link.type}
-                </Title>
-                <a href={link.url} target="_blank" rel="noreferrer">
-                  {link.name}
-                </a>
+                </Card>
               </div>
-            ))}
-          </div> */}
-        </CoinInformation>
+            </CoinInformation>
+          </>
+        )}
       </Container>
     </Section>
   );

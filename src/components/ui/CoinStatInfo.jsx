@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 
-import { Content, SubHeading, SubContent } from "./Typography";
+import { SubHeading, SubContent } from "./Typography";
 
 const StatName = styled(SubHeading)`
   font-size: 13px;
@@ -31,16 +31,9 @@ const Tr = styled.tr`
   &:nth-of-type(2n) {
     background-color: #fbfbfb;
   }
-  &:hover {
-    border: 3px solid #e9e9e9;
-  }
-`;
-
-const CoinStat = styled.div`
-  ${tw`flex flex-col`}
-`;
-const CoinStatName = styled.div`
-  ${tw`flex`}
+  // &:hover {
+  //   border: 3px solid #e9e9e9;
+  // }
 `;
 
 const Icon = styled.span`
@@ -54,15 +47,7 @@ const Table = styled.table`
 `;
 
 const CoinStatInfo = ({ stats, tableName, symbol }) => {
-  console.log("stats: ", stats);
   return (
-    // <CoinStat>
-    //   <CoinStatName>
-    //     <Icon>{icon}</Icon>
-    //     <Content className={"pl-2"}>{title}</Content>
-    //   </CoinStatName>
-    //   <Content>{value}</Content>
-    // </CoinStat>
     <Table>
       <thead>
         <tr>
@@ -89,7 +74,7 @@ const CoinStatInfo = ({ stats, tableName, symbol }) => {
       </thead>
       <tbody>
         {stats?.map(({ icon, title, value }) => (
-          <Tr>
+          <Tr key={title}>
             <Th>
               <div className="flex items-center">
                 <Icon>{icon}</Icon>

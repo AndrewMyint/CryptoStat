@@ -1,4 +1,5 @@
 import React from "react";
+import millify from "millify";
 import {
   LineChart,
   Line,
@@ -6,11 +7,8 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
-
-import { Title, Content } from "./ui/Typography";
 
 import { format } from "date-fns";
 
@@ -30,7 +28,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const LineChart2 = ({ coinHistory }) => {
+const LineChart2 = ({ coinHistory, dateType }) => {
   const data = coinHistory?.data?.history?.map((obj) => ({
     date: obj.timestamp,
     val: obj.price,
@@ -38,10 +36,25 @@ const LineChart2 = ({ coinHistory }) => {
   // var latest = new Date(Math.max.apply(null, dates));
   // var earliest = new Date(Math.min.apply(null, dates));
   const dateFormatter = (date) => {
-    if (date) return format(new Date(date), "MMM dd")?.toUpperCase();
+    if (date) {
+      if (dateType === "1D" || dateType === "3H") {
+        return format(new Date(date * 1000), "h:mm a MMM dd")?.toUpperCase();
+      } else if (dateType === "7D") {
+        return format(new Date(date * 1000), "MMM dd")?.toUpperCase();
+      } else if (dateType === "1M") {
+        return format(new Date(date * 1000), "MMM dd yyyy")?.toUpperCase();
+      }
+      //  else if (dateType === "5Y") {
+      //   return format(new Date(date), "MMM yyyy")?.toUpperCase();
+      // }
+      else {
+        return format(new Date(date * 1000), "MMM yyyy")?.toUpperCase();
+      }
+    }
   };
+  const min = Math.min(...coinHistory?.data?.history?.map((d) => d.price));
+  const max = Math.max(...coinHistory?.data?.history?.map((d) => d.price));
 
-  console.log("LineChart2: ", data);
   return (
     <>
       <ResponsiveContainer width="100%" height={400}>
@@ -51,14 +64,15 @@ const LineChart2 = ({ coinHistory }) => {
           data={data}
           margin={{
             top: 5,
-            right: 30,
-            left: 20,
+            right: 0,
+            left: 0,
             bottom: 5,
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
 
           <XAxis
+            stroke="#9da5b4"
             dataKey="date"
             type="number"
             domain={["min", "max"]}
@@ -70,13 +84,16 @@ const LineChart2 = ({ coinHistory }) => {
             tickMargin={10}
           />
           <YAxis
+            stroke="#9da5b4"
             dataKey="val"
-            // tickCount={7}
+            tickCount={9}
             padding={{ bottom: 10 }}
             tickSize={0}
-            domain={["auto", "auto"]}
-            tickMargin={10}
-            // tickFormatter={(number) => `$${number.toFixed(2)}`}
+            domain={[min, max]}
+            tickMargin={20}
+            tickFormatter={(number) => {
+              return millify(number);
+            }}
           />
           <Tooltip content={<CustomTooltip />} />
           {/* <Legend /> */}

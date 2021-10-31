@@ -2,10 +2,8 @@ import styled from "styled-components";
 import tw from "twin.macro";
 
 export const Title = styled.div`
-  ${tw`py-5 `}
-  font-size: 32px;
-  line-height: 42px;
-  font-weight: 500;
+  ${tw`pt-5 pb-2 text-sm sm:text-lg font-medium`}
+  color: rgb(0, 24, 113);
 `;
 
 export const Content = styled.p`

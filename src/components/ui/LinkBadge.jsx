@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { LinkIcon, ExternalLinkIcon } from "@heroicons/react/outline";
+import { ExternalLinkIcon } from "@heroicons/react/outline";
 
 const BadgeContainer = styled.div`
   ${tw` inline-flex px-2 justify-center items-center text-black hover:text-white  font-normal bg-gray-100 hover:bg-gray-400 h-7 capitalize cursor-pointer rounded-md`}
@@ -19,8 +19,8 @@ const LinkBadge = ({ Icon, type, item, style }) => {
       </span>
       <span>
         <a
-          href={item[0].url}
-          alt={item[0].name}
+          href={item[0]?.url}
+          alt={item[0]?.name}
           target="_black"
           rel="noreferrer noopener"
         >

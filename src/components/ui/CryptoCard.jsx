@@ -6,7 +6,7 @@ import millify from "millify";
 import { CardTitle, CardContent } from "./Typography";
 
 const CardContainer = styled.div`
-  ${tw`flex flex-col border rounded-lg bg-white p-2 hover:shadow-xl m-1 transition duration-300 ease-in-out`}
+  ${tw`flex flex-col border rounded-lg bg-white p-2 hover:shadow-2xl transition duration-300 ease-in-out`}
 `;
 const TitleContainer = styled.div`
   ${tw`flex justify-between border-b p-3 items-center`}

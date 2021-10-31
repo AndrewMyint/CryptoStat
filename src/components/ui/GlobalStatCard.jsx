@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 //bg-white min-w-0 rounded-lg shadow p-4
 const CardContainer = styled.div`
-  ${tw`flex p-6 border bg-white `}
+  ${tw`flex p-4 border bg-white `}
 `;
 const Icon = styled.div`
   ${tw`p-3 `}
