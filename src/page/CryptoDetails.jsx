@@ -173,21 +173,13 @@ const CryptoDetails = () => {
   const [timeperiod, setTimeperiod] = useState({ value: "7d", text: "7D" });
   const { data, isFetching: isFetchingDetail } =
     useGetCryptoDetailsQuery(coinId);
-  const { data: coinHistory, isFetching: isFetchingHistory } =
-    useGetCryptoHistoryQuery({
-      coinId,
-      timeperiod,
-    });
+  // const { data: coinHistory, isFetching: isFetchingHistory } =
+  //   useGetCryptoHistoryQuery({
+  //     coinId,
+  //     timeperiod,
+  //   });
 
-  if (isFetchingHistory) {
-    return (
-      <Section>
-        <Container>
-          <Loader />
-        </Container>
-      </Section>
-    );
-  } else if (isFetchingDetail) {
+  if (isFetchingDetail) {
     return (
       <Section>
         <Container>
@@ -478,8 +470,9 @@ const CryptoDetails = () => {
               </TimeSlotContainer>
             </TimePeriodBar>
             <LineChart2
-              coinHistory={coinHistory}
-              dateType={timeperiod.text.toUpperCase()}
+              timeperiod={timeperiod}
+              // dateType={timeperiod.text.toUpperCase()}
+              coinId={coinId}
             />
             {/* <Content>
             {cryptoDetails.name} live price in US Dollar (USD). View value

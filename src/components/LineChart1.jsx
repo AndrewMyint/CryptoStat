@@ -98,7 +98,7 @@ const LineChart2 = ({ timeperiod, coinId }) => {
         </div>
       ) : isError ? (
         <div style={{ height: "450px", position: "relative" }}>
-          <LineChartError />
+          <Error />
         </div>
       ) : coinHistory ? (
         <ResponsiveContainer width="100%" height={450}>
@@ -116,12 +116,6 @@ const LineChart2 = ({ timeperiod, coinId }) => {
               bottom: 5,
             }}
           >
-            <defs>
-              <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-              </linearGradient>
-            </defs>
             <XAxis
               axisLine={false}
               stroke="#9da5b4"
@@ -131,7 +125,7 @@ const LineChart2 = ({ timeperiod, coinId }) => {
               hasTicks={false}
               tickFormatter={dateFormatter}
               tickCount={8}
-              padding={{ left: 10, right: 10 }}
+              // padding={{ left: 30 }}
               tickSize={0}
               tickMargin={10}
             />
@@ -158,10 +152,10 @@ const LineChart2 = ({ timeperiod, coinId }) => {
               type="monotone"
               dataKey="val"
               stroke="#8884d8"
-              // fill="#8884d8"
-              fill="url(#colorUv)"
+              fill="url()"
               dot={false}
               fillOpacity={1}
+
               // activeDot={{ r: 8 }}
             />
           </AreaChart>

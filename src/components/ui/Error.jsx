@@ -13,7 +13,7 @@ const ErrorContainer = styled.div`
 const Error = () => {
   return (
     <ErrorContainer className=" w-full h-full">
-      <div className="flex justify-center items-center">
+      <div className="flex justify-center items-center w-full h-full">
         <FontAwesomeIcon
           icon={faExclamationTriangle}
           className={" h-8 w-8 mr-2 text-red-600"}
