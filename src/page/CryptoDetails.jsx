@@ -36,10 +36,7 @@ import {
   CheckOutlined,
 } from "@ant-design/icons";
 
-import {
-  useGetCryptoDetailsQuery,
-  useGetCryptoHistoryQuery,
-} from "../services/cryptoApi";
+import { useGetCryptoDetailsQuery } from "../services/cryptoApi";
 
 import LineChart2 from "../components/LineChart2";
 
