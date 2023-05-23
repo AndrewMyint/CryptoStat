@@ -176,7 +176,7 @@ const CryptoDetails = () => {
   //     timeperiod,
   //   });
 
-  if (isFetchingDetail) {
+  if (isFetchingDetail || !data) {
     return (
       <Section>
         <Container>
@@ -203,10 +203,10 @@ const CryptoDetails = () => {
   const stats = [
     {
       title: "Price to USD",
-      value: `$ ${cryptoDetails.price && millify(cryptoDetails.price)}`,
+      value: `$ ${cryptoDetails?.price && millify(cryptoDetails?.price)}`,
       icon: <CurrencyDollarIcon />,
     },
-    { title: "Rank", value: cryptoDetails.rank, icon: <HashtagIcon /> },
+    { title: "Rank", value: cryptoDetails?.rank, icon: <HashtagIcon /> },
     {
       title: "24h Volume",
       value: `$ ${
@@ -217,7 +217,9 @@ const CryptoDetails = () => {
     },
     {
       title: "Market Cap",
-      value: `$ ${cryptoDetails.marketCap && millify(cryptoDetails.marketCap)}`,
+      value: `$ ${
+        cryptoDetails?.marketCap && millify(cryptoDetails?.marketCap)
+      }`,
       icon: <TrendingUpIcon />,
     },
     {
@@ -249,7 +251,11 @@ const CryptoDetails = () => {
     },
     {
       title: "Total Supply",
-      value: `$ ${millify(cryptoDetails?.supply?.total)}`,
+      value: `$ ${
+        cryptoDetails?.supply?.total
+          ? millify(cryptoDetails?.supply?.total)
+          : ""
+      }`,
       icon: <SupportIcon />,
     },
     {

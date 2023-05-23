@@ -26,7 +26,6 @@ const GlobalStatCardContainer = styled.div`
 const GlobalStats = () => {
   const { data, isFetching, error, isLoading } = useGetGlobalStatsQuery();
   const globalStats = { ...data?.data };
-
   return (
     <Section>
       <Container>

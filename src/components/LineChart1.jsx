@@ -58,7 +58,6 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const LineChart2 = ({ timeperiod, coinId }) => {
-  console.log("inside linchart: ", timeperiod, coinId);
   const { value: time, text: dateType } = timeperiod;
   const {
     data: coinHistory,
