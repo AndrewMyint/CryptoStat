@@ -43,7 +43,6 @@ const Description = styled.div`
 
 const Exchanges = () => {
   const [list, setList] = useState({});
-  const [id, setId] = useState(" ");
   const { data, isFetching, isError, error } = useGetExchangesQuery();
   // const [getExchanges, { data: exchangeData, isLoading, isError }] =
   //   useLazyGetExchangeQuery({
